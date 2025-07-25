@@ -2,21 +2,21 @@
   "expo": {
     "name": "laratube",
     "slug": "laratube",
-    "version": "1.0.0",
-    "orientation": "portrait",
+    "orientation": "default",
     "icon": "./assets/images/icon.png",
     "scheme": "laratube",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
-    "ios": {
-      "supportsTablet": true
-    },
+    "description": "youtube ad blocker",
+    "owner": "kovalenkoandrii",
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "edgeToEdgeEnabled": true
+      "edgeToEdgeEnabled": true,
+      "package": "com.kovalenkoandrii.laratube",
+      "versionCode": 2
     },
     "web": {
       "bundler": "metro",
@@ -33,10 +33,29 @@
           "resizeMode": "contain",
           "backgroundColor": "#ffffff"
         }
+      ],
+      [
+        "expo-web-browser",
+        {
+          "experimentalLauncherActivity": true
+        }
       ]
     ],
     "experiments": {
       "typedRoutes": true
-    }
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "3d180dd6-7e71-49a4-9551-a4e56a546d79"
+      }
+    },
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/3d180dd6-7e71-49a4-9551-a4e56a546d79"
+    },
+    "ios": {}
   }
 }

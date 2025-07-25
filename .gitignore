@@ -1,5 +1,6 @@
 # Learn more https://docs.github.com/en/get-started/getting-started-with-git/ignoring-files
-
+pc-api-8077808323240131981-400-ef6e75bdade8.json
+credentials.json
 # dependencies
 node_modules/
 
