@@ -51,3 +51,4 @@ Join our community of developers creating universal apps.
 echo "# laratube" >> README.md
 result:
 # laratube
+TIP: You are using a build configuration that could benefit from using eas build:dev command. Run it to install and run cached development build, or create a new one if a compatible build doesn't exist yet.

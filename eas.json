@@ -19,6 +19,16 @@
       "autoIncrement": true,
       "channel": "production",
       "credentialsSource": "local"
+    },
+    "development-simulator": {
+      "channel": "simulator",
+      "developmentClient": true,
+      "distribution": "internal",
+      "credentialsSource": "local",
+      "ios": {
+        "simulator": true
+      },
+      "environment": "development"
     }
   },
   "submit": {

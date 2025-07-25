@@ -7,7 +7,7 @@
 
 // App.js
 import * as Linking from "expo-linking";
-import React, { useRef, useState, useEffect } from "react";
+import React, { useRef, useState } from "react";
 import {
   Alert,
   SafeAreaView,
@@ -16,43 +16,14 @@ import {
   Text,
   TouchableOpacity,
   View,
+  Platform
 } from "react-native";
 import { WebView } from "react-native-webview";
-import {
-  activateKeepAwakeAsync,
-  deactivateKeepAwakeAsync,
-} from "expo-keep-awake";
 
 export default function App() {
   const [currentUrl, setCurrentUrl] = useState("https://www.youtube.com");
-  const [isLoading, setIsLoading] = useState(false);
   const webViewRef = useRef(null);
 
-  // Add keep-awake effect
-  useEffect(() => {
-    const enableKeepAwake = async () => {
-      await activateKeepAwakeAsync();
-    };
-
-    enableKeepAwake();
-
-    // Cleanup function to deactivate keep-awake when component unmounts
-    return () => {
-      deactivateKeepAwakeAsync();
-    };
-  }, []);
-  useEffect(() => {
-    const script = `
-    (function() {
-      // Enable background audio
-      if (document.createElement('video').canPlayType) {
-        document.createElement('video').setAttribute('playsinline', '');
-        document.createElement('video').setAttribute('controls', '');
-      }
-    })();
-  `;
-    webViewRef.current?.injectJavaScript(script);
-  }, []);
   // Basic ad blocking script to inject into the WebView
   const adBlockingScript = `
     (function() {
@@ -148,14 +119,6 @@ export default function App() {
     setCurrentUrl(navState.url);
   };
 
-  const handleLoadStart = () => {
-    setIsLoading(true);
-  };
-
-  const handleLoadEnd = () => {
-    setIsLoading(false);
-  };
-
   const handleGoBack = () => {
     webViewRef.current?.goBack();
   };
@@ -203,22 +166,13 @@ export default function App() {
         </TouchableOpacity>
       </View>
 
-      {/* Loading Indicator */}
-      {isLoading && (
-        <View style={styles.loadingContainer}>
-          <Text style={styles.loadingText}>Loading...</Text>
-        </View>
-      )}
-
       {/* WebView */}
       <WebView
         ref={webViewRef}
         source={{ uri: currentUrl }}
         style={styles.webview}
         onNavigationStateChange={handleNavigationStateChange}
-        onLoadStart={handleLoadStart}
-        onLoadEnd={handleLoadEnd}
-        injectedJavaScript={adBlockingScript}
+        injectedJavaScriptBeforeContentLoaded={adBlockingScript}
         javaScriptEnabled={true}
         domStorageEnabled={true}
         startInLoadingState={true}
@@ -226,12 +180,16 @@ export default function App() {
         mediaPlaybackRequiresUserAction={false}
         allowsBackgroundMediaPlayback={true}
         androidLayerType="hardware"
-        androidHardwareAccelerationDisabled={false}
         onError={(error) => {
-          Alert.alert("Error", "Failed to load the page");
+          Alert.alert("Error", `Failed to load the page: ${error.nativeEvent?.description || error.message || "Unknown error"}`);
+          console.log("WebView error:", error);
           console.log("WebView error:", error);
         }}
-        userAgent="Mozilla/5.0 (iPhone; CPU iPhone OS 15_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.0 Mobile/15E148 Safari/604.1"
+        userAgent={
+          Platform.OS === "ios"
+            ? "Mozilla/5.0 (iPhone; CPU iPhone OS 15_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.0 Mobile/15E148 Safari/604.1"
+            : "Mozilla/5.0 (Linux; Android 11; Mobile) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0.4606.61 Mobile Safari/537.36"
+        }
       />
     </SafeAreaView>
   );
