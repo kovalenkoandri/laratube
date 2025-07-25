@@ -16,7 +16,10 @@
     "android": {
       "edgeToEdgeEnabled": false,
       "package": "com.kovalenkoandrii.laratube",
-      "versionCode": 2
+      "versionCode": 3,
+      "permissions": [
+        "WAKE_LOCK"
+      ]
     },
     "plugins": [
       "expo-router",

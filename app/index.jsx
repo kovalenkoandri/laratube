@@ -7,7 +7,7 @@
 
 // App.js
 import * as Linking from "expo-linking";
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import {
   Alert,
   SafeAreaView,
@@ -18,12 +18,41 @@ import {
   View,
 } from "react-native";
 import { WebView } from "react-native-webview";
+import {
+  activateKeepAwakeAsync,
+  deactivateKeepAwakeAsync,
+} from "expo-keep-awake";
 
 export default function App() {
   const [currentUrl, setCurrentUrl] = useState("https://www.youtube.com");
   const [isLoading, setIsLoading] = useState(false);
   const webViewRef = useRef(null);
 
+  // Add keep-awake effect
+  useEffect(() => {
+    const enableKeepAwake = async () => {
+      await activateKeepAwakeAsync();
+    };
+
+    enableKeepAwake();
+
+    // Cleanup function to deactivate keep-awake when component unmounts
+    return () => {
+      deactivateKeepAwakeAsync();
+    };
+  }, []);
+  useEffect(() => {
+    const script = `
+    (function() {
+      // Enable background audio
+      if (document.createElement('video').canPlayType) {
+        document.createElement('video').setAttribute('playsinline', '');
+        document.createElement('video').setAttribute('controls', '');
+      }
+    })();
+  `;
+    webViewRef.current?.injectJavaScript(script);
+  }, []);
   // Basic ad blocking script to inject into the WebView
   const adBlockingScript = `
     (function() {
@@ -195,6 +224,9 @@ export default function App() {
         startInLoadingState={true}
         allowsInlineMediaPlayback={true}
         mediaPlaybackRequiresUserAction={false}
+        allowsBackgroundMediaPlayback={true}
+        androidLayerType="hardware"
+        androidHardwareAccelerationDisabled={false}
         onError={(error) => {
           Alert.alert("Error", "Failed to load the page");
           console.log("WebView error:", error);
