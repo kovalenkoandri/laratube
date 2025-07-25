@@ -6,22 +6,20 @@
 // npx expo install expo-web-browser expo-linking react-native-webview
 
 // App.js
-import React, { useState, useRef } from "react";
+import * as Linking from "expo-linking";
+import React, { useRef, useState } from "react";
 import {
-  StyleSheet,
-  View,
-  Text,
-  TextInput,
-  TouchableOpacity,
   Alert,
   SafeAreaView,
   StatusBar,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
 } from "react-native";
 import { WebView } from "react-native-webview";
-import * as Linking from "expo-linking";
 
 export default function App() {
-  const [url, setUrl] = useState("https://www.youtube.com");
   const [currentUrl, setCurrentUrl] = useState("https://www.youtube.com");
   const [isLoading, setIsLoading] = useState(false);
   const webViewRef = useRef(null);
@@ -129,15 +127,6 @@ export default function App() {
     setIsLoading(false);
   };
 
-  const handleGoPress = () => {
-    let formattedUrl = url;
-    if (!url.startsWith("http://") && !url.startsWith("https://")) {
-      formattedUrl = "https://" + url;
-    }
-    setCurrentUrl(formattedUrl);
-    webViewRef.current?.reload();
-  };
-
   const handleGoBack = () => {
     webViewRef.current?.goBack();
   };
@@ -161,21 +150,6 @@ export default function App() {
       {/* Header */}
       <View style={styles.header}>
         <Text style={styles.title}>YouTube Ad Blocker</Text>
-      </View>
-
-      {/* URL Input */}
-      <View style={styles.urlContainer}>
-        <TextInput
-          style={styles.urlInput}
-          value={url}
-          onChangeText={setUrl}
-          placeholder="Enter YouTube URL..."
-          autoCapitalize="none"
-          autoCorrect={false}
-        />
-        <TouchableOpacity style={styles.goButton} onPress={handleGoPress}>
-          <Text style={styles.goButtonText}>Go</Text>
-        </TouchableOpacity>
       </View>
 
       {/* Navigation Controls */}
@@ -246,32 +220,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: "bold",
   },
-  urlContainer: {
-    flexDirection: "row",
-    padding: 10,
-    backgroundColor: "#f0f0f0",
-  },
-  urlInput: {
-    flex: 1,
-    borderWidth: 1,
-    borderColor: "#ccc",
-    borderRadius: 5,
-    paddingHorizontal: 10,
-    paddingVertical: 8,
-    backgroundColor: "#fff",
-    marginRight: 10,
-  },
-  goButton: {
-    backgroundColor: "#ff0000",
-    paddingHorizontal: 20,
-    paddingVertical: 8,
-    borderRadius: 5,
-    justifyContent: "center",
-  },
-  goButtonText: {
-    color: "#fff",
-    fontWeight: "bold",
-  },
+
   controls: {
     flexDirection: "row",
     backgroundColor: "#f0f0f0",
